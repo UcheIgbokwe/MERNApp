@@ -22,7 +22,7 @@ const inputReducer = (state, action) => {
 };
 
 const Input = props => {
-    const [inputState, dispatch] = useReducer(inputReducer, {value: '', isValid: false, isTouched: false});
+    const [inputState, dispatch] = useReducer(inputReducer, {value: props.initialValue || '', isValid: props.initialValid || false, isTouched: false});
     //the value of the inputstate will need to be passed back to the textbox.
 
     //extract the relevant inputs that need to be recognised when changed.
