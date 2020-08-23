@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import './PlaceForm.css';
@@ -35,22 +35,45 @@ const DUMMY_PLACES = [
 ];
 
 const UpdatePlace = () => {
-
+    const [isLoading, setIsLoading] = useState(true);
     const placeId = useParams().placeId
-    const identifiedPlace = DUMMY_PLACES.find(u => u.id === placeId);
 
-    const [formState, inputHandler] = useForm(
+    const [formState, inputHandler, setFormData] = useForm(
         {
             title: {
-                value: identifiedPlace.title,
-                isValid: true
+                value: '',
+                isValid: false
             },
             description: {
-                value: identifiedPlace.description,
-                isValid: true
+                value: '',
+                isValid: false
             }
-        }, true
+        }, false
     );
+
+    //the data to be retrieved was brought below the hook because it could take time to load and the hook needs to display at runtime.
+    const identifiedPlace = DUMMY_PLACES.find(u => u.id === placeId);
+
+    //useEffect hook is called here so that the setformdata hook isn't called everytime this page reloads, only when the parameters change.
+    useEffect(() => {
+        if (identifiedPlace) {
+            //now i can set form data using the setFormData hook because i have initialised the initial data.
+            setFormData(
+                {
+                    title: {
+                        value: identifiedPlace.title,
+                        isValid: true
+                    },
+                    description: {
+                        value: identifiedPlace.description,
+                        isValid: true
+                    }
+                }, true
+            );
+        }
+        setIsLoading(false);
+    }, [setFormData, identifiedPlace]);
+    
 
     const placeUpdateSubmitHandler = event => {
         event.preventDefault();
@@ -61,6 +84,14 @@ const UpdatePlace = () => {
         return (
             <div className="center">
                 <h2>Could not find place!</h2>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="center">
+                <h2>Loading...</h2>
             </div>
         );
     }
