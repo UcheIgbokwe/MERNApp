@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const sequelize = require('./dbConnection');
 const placesRouter = require('./routes/places-routes');
 const usersRouter = require('./routes/users-routes');
 const HttpError = require('./models/http-error');
@@ -27,5 +28,15 @@ app.use((error, req, res, next) => {
     res.json({message: error.message || 'An unknown error occurred!'});
 });
 
+
+sequelize
+    .authenticate()
+    .then(() => {
+        app.listen(3000);
+        console.log('Connection Opor!')
+    })
+    .catch(err => {
+        console.log(err)
+    })
 
 app.listen(5000);

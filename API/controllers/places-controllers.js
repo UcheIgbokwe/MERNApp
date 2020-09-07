@@ -2,8 +2,7 @@ const uuid = require('uuid').v4;
 
 const HttpError = require('../models/http-error');
 const getCordinates = require('../util/location');
-const { poolPromise } = require('../mssql');
-//const { pool } = require('mssql');
+const product = require('../models/product');
 
 let DUMMY_PLACES = [
     {
@@ -110,22 +109,17 @@ const deletePlace = (req, res, next) => {
     throw new HttpError("Id is null", 404);
 };
 
-const createProduct = async(req, res, next) => {
-    //when you use an async , always wrap your throw in a next function and wrap your imported async function in a try catch.
+const createProduct = (req, res, next) => {
     const { name, productType } = req.body;
 
-    try {
-        const poolConnect = await poolPromise;
-        const result = await poolConnect.request()
-            .query(`INSERT INTO [dbo].[ProductsTable] (Name,ProductType) VALUES('${name}','${productType}')`)
-        poolConnect.close();
-        return res.status(201).json({message: "Success!"})
-    } catch (error) {
-        return res.status(300).json({message: error.message})
-    };
-
-    
-};
+    product.create({Name: name, ProductType: productType})
+        .then(data => {
+            return res.status(201).json({Result: data})
+        })
+        .catch(error => {
+            return res.status(300).json({message: error.message})
+        })
+}
 
 exports.getPlaceById = getPlaceById;
 exports.getPlacesByUserId = getPlacesByUserId;
