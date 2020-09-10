@@ -6,5 +6,12 @@ async function getCordinates(address) {
     return location;
 };
 
+function getCordinatess(address) {
 
-module.exports = getCordinates;
+    const location =  { lat: 40.7484474, lng: -739871516 }
+    return location;
+};
+
+
+exports.getCordinates = getCordinates;
+exports.getCordinatess = getCordinatess;
