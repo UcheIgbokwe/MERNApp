@@ -8,7 +8,6 @@ router.get('/:pId', placesControllers.getPlaceById);
 router.get('/user/:uid', placesControllers.getPlacesByUserId)
 
 router.post('/', placesControllers.createPlace)
-//router.post('/', placesControllers.createProduct)
 
 router.patch('/:pId', placesControllers.updatePlace)
 

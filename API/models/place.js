@@ -37,6 +37,11 @@ const place = sequelize.define('Place', {
     Creator:{
         type: Sequelize.STRING,
         allowNull: false
+    },
+    CreatedAt:{
+        type: Sequelize.DATEONLY,
+        defaultValue: Sequelize.NOW,
+        allowNull: false
     }
 }, { timestamps: false, freezeTableName: true});
 
