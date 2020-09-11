@@ -14,30 +14,17 @@ const user = sequelize.define('User', {
     },
     Email:{
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            isEmail:true
-        },
-        unique: {
-            args: true,
-            msg: 'Email address already in use!'
-        }
+        allowNull: false
     },
     Password:{
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            len: { 
-               args: [5, 12],
-               msg: "The password length should be between 7 and 42 characters."
-            }
-        }
+        allowNull: false
     },
     CreatedAt:{
         type: Sequelize.DATEONLY,
         defaultValue: Sequelize.NOW,
         allowNull: false
     }
-}, { timestamps: false, freezeTableName: true});
+}, { timestamps: false, freezeTableName: true, });
 
 module.exports = user;

@@ -2,7 +2,6 @@ const uuid = require('uuid').v4;
 
 const HttpError = require('../models/http-error');
 const cordinate = require('../util/location');
-const product = require('../models/product');
 const place = require('../models/place');
 
 
@@ -143,21 +142,9 @@ const deletePlace = (req, res, next) => {
     throw new HttpError("Id is null", 404);
 };
 
-const createProduct = (req, res, next) => {
-    const { name, productType } = req.body;
-
-    product.create({Name: name, ProductType: productType})
-        .then(data => {
-            return res.status(201).json({Result: data})
-        })
-        .catch(error => {
-            return res.status(300).json({message: error.message})
-        })
-}
 
 exports.getPlaceById = getPlaceById;
 exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;
 exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
-exports.createProduct = createProduct;
