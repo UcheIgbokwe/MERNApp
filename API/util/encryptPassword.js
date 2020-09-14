@@ -18,7 +18,19 @@ function salted(password, saltRounds, callback) {
                     }
                 });
             }
-        })
+        });
+    });
+};
+
+function compare(password, hashedPassword) {
+    return new Promise((resolve, reject) => {
+        bcrypt.compare(password, hashedPassword, (error, result) => {
+            if (error) {
+                return reject(error); 
+            }else{
+                return resolve(result);
+            }
+        });
     });
 };
 
@@ -30,11 +42,20 @@ async function cryptPassword(password, callback){
         callback(data);
     })
     .catch(error => {
-
+        return new HttpError(error.message, 300);
     })
-    
-    //return hashedPassword;
+};
+
+function comparePassword(password, hashedPassword, callback){
+    compare(password, hashedPassword)
+    .then(data => {
+        callback(data);
+    })
+    .catch(error => {
+        return new HttpError(error.message, 300);
+    })
 };
 
 exports.cryptPassword = cryptPassword;
+exports.comparePassword = comparePassword;
 

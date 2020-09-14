@@ -30,25 +30,20 @@ const signup = async ( req, res, next ) => {
     }
     const { name, email, password } = req.body;
 
-    let hashedPassword;
     try {
-        hashedPassword = await encryptPassword.cryptPassword(password, result => {
-            //console.log(`Hashed password here222: ${result}`)
+        await encryptPassword.cryptPassword(password, hashedPassword => {
+            try {
+                user.create({Name: name, Email: email, Password: hashedPassword})
+                .then(data => {
+                    return res.status(201).json({ userCreated: data })
+                })
+                .catch(error => {
+                    return next(new HttpError(error.message, 300));
+                })
+            } catch (error) {
+                return next(new HttpError(error.message, 300));
+            }
         });
-    } catch (error) {
-        
-    }
-    
-    console.log(`Hashed password here222: ${hashedPassword}`)
-
-    try {
-        user.create({Name: name, Email: email, Password: password})
-        .then(data => {
-            return res.status(201).json({ userCreated: data })
-        })
-        .catch(error => {
-            return next(new HttpError(error.message, 300));
-        })
     } catch (error) {
         return next(new HttpError(error.message, 300));
     }
@@ -61,11 +56,13 @@ const login = ( req, res, next ) => {
     try {
         user.findOne({where:{Email:email}})
         .then(identifyUser => {
-            if (identifyUser.Password === password) {
-                return res.status(200).json({ message: 'Logged in '})
-            }else{
-                return next(new HttpError('Could not identify user.', 401))
-            }
+            encryptPassword.comparePassword(password, identifyUser.Password, result => {
+                if (result) {
+                    return res.status(200).json({ message: 'Logged in '})
+                }else{
+                    return next(new HttpError('Could not identify user.', 401))
+                }
+            });
         })
         .catch(error => {
             return next(new HttpError(error.message, 300));
