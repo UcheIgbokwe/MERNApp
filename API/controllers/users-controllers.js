@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-error');
 const user = require('../models/user');
+const encryptPassword = require('../util/encryptPassword');
 
 
 const getAllUsers = ( req, res, next ) => {
@@ -22,12 +23,23 @@ const getAllUsers = ( req, res, next ) => {
     
 };
 
-const signup = ( req, res, next ) => {
+const signup = async ( req, res, next ) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
     const { name, email, password } = req.body;
+
+    let hashedPassword;
+    try {
+        hashedPassword = await encryptPassword.cryptPassword(password, result => {
+            //console.log(`Hashed password here222: ${result}`)
+        });
+    } catch (error) {
+        
+    }
+    
+    console.log(`Hashed password here222: ${hashedPassword}`)
 
     try {
         user.create({Name: name, Email: email, Password: password})
